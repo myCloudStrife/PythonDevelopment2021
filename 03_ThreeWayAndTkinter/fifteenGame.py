@@ -72,11 +72,24 @@ class FifteenGame(tk.Tk):
         pos[1] = 0
     return True
 
+  def isSolvable(self, order):
+    perm = order.copy()
+    emptyParity = (len(perm) - perm.index(None) - 1) // self.columnsNumber
+    emptyParity = (self.columnsNumber + 1) * emptyParity
+    inversions = 0
+    perm.remove(None)
+    while (len(perm)):
+      maxEl = max(perm)
+      inversions += len(perm) - perm.index(maxEl) - 1
+      perm.remove(maxEl)
+    return ((inversions + emptyParity) % 2 == 0)
+
   def newGame(self):
     order = [i for i in range(len(self.playButtons))]
     order.append(None)
     random.shuffle(order)
-    #todo: check solvability
+    while (not self.isSolvable(order)):
+      random.shuffle(order)
 
     pos = [0, 0]
     for idx in order:
