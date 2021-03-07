@@ -1,4 +1,5 @@
 import tkinter as tk
+import random
 
 
 class FifteenGame(tk.Tk):
@@ -51,9 +52,17 @@ class FifteenGame(tk.Tk):
     pass
 
   def newGame(self):
+    order = [i for i in range(len(self.playButtons))]
+    order.append(None)
+    random.shuffle(order)
+    #todo: check solvability
+
     pos = [0, 0]
-    for button in self.playButtons:
-      button.grid(row=pos[0], column=pos[1], sticky="NESW")
+    for idx in order:
+      if (idx == None):
+        self.emptyPos = pos
+      else:
+        self.playButtons[idx].grid(row=pos[0], column=pos[1], sticky="NESW")
       pos[1] += 1
       if (pos[1] == self.columnsNumber):
         pos[0] += 1
