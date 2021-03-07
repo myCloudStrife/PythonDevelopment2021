@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.messagebox as msgbox
 import random
 
 
@@ -54,6 +55,22 @@ class FifteenGame(tk.Tk):
     if (abs(self.emptyPos[0] - row) + abs(self.emptyPos[1] - column) == 1):
       button.grid(row=self.emptyPos[0], column=self.emptyPos[1], sticky="NESW")
       self.emptyPos = [row, column]
+    if (self.isSolved()):
+      msgbox.showinfo(message="You win!!!")
+      self.newGame()
+
+  def isSolved(self):
+    pos = [0, 0]
+    for button in self.playButtons:
+      row = button.grid_info()["row"]
+      column = button.grid_info()["column"]
+      if (pos[0] != row or pos[1] != column):
+        return False
+      pos[1] += 1
+      if (pos[1] == self.columnsNumber):
+        pos[0] += 1
+        pos[1] = 0
+    return True
 
   def newGame(self):
     order = [i for i in range(len(self.playButtons))]
