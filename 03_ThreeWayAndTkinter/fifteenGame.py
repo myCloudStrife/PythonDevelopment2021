@@ -38,7 +38,7 @@ class FifteenGame(tk.Tk):
     self.playButtons = []
     for i in range(1, rowsNumber * columnsNumber):
       playButton = tk.Button(self.playFrame, text=str(i))
-      playButton["command"] = lambda: self.processClick(playButton)
+      playButton["command"] = lambda button=playButton: self.processClick(button)
       self.playButtons.append(playButton)
 
     for i in range(rowsNumber):
@@ -49,7 +49,11 @@ class FifteenGame(tk.Tk):
 
 
   def processClick(self, button):
-    pass
+    row = button.grid_info()["row"]
+    column = button.grid_info()["column"]
+    if (abs(self.emptyPos[0] - row) + abs(self.emptyPos[1] - column) == 1):
+      button.grid(row=self.emptyPos[0], column=self.emptyPos[1], sticky="NESW")
+      self.emptyPos = [row, column]
 
   def newGame(self):
     order = [i for i in range(len(self.playButtons))]
@@ -60,7 +64,7 @@ class FifteenGame(tk.Tk):
     pos = [0, 0]
     for idx in order:
       if (idx == None):
-        self.emptyPos = pos
+        self.emptyPos = pos.copy()
       else:
         self.playButtons[idx].grid(row=pos[0], column=pos[1], sticky="NESW")
       pos[1] += 1
