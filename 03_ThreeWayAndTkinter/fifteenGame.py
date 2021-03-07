@@ -31,6 +31,10 @@ class FifteenGame(tk.Tk):
     self.exitButton.grid(row=0, column=1)
     self.menuFrame.columnconfigure(1, weight=1)
 
+    self.movesLabel = tk.Label(self.menuFrame)
+    self.movesLabel.grid(row=0, column=2)
+    self.menuFrame.columnconfigure(2, weight=1)
+
   def createPlayFrame(self):
     self.playFrame = tk.Frame(self)
     self.playFrame.grid(row=1, column=0, sticky="NESW")
@@ -60,12 +64,20 @@ class FifteenGame(tk.Tk):
       for button in self.playButtons:
         button.config(font=("", int(scale)))
 
+  def updateMoves(self, restart=False):
+    if (restart):
+      self.moves = 0
+    else:
+      self.moves += 1
+    self.movesLabel.config(text="Moves: "+str(self.moves))
+
   def processClick(self, button):
     row = button.grid_info()["row"]
     column = button.grid_info()["column"]
     if (abs(self.emptyPos[0] - row) + abs(self.emptyPos[1] - column) == 1):
       button.grid(row=self.emptyPos[0], column=self.emptyPos[1], sticky="NESW")
       self.emptyPos = [row, column]
+      self.updateMoves()
     if (self.isSolved()):
       msgbox.showinfo(message="You win!!!")
       self.newGame()
@@ -112,6 +124,8 @@ class FifteenGame(tk.Tk):
       if (pos[1] == self.columnsNumber):
         pos[0] += 1
         pos[1] = 0
+
+    self.updateMoves(restart=True)
 
 
 FifteenGame().mainloop()
