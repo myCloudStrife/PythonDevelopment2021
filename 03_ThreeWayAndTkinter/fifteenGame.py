@@ -17,6 +17,8 @@ class FifteenGame(tk.Tk):
 
     self.newGame()
 
+    self.bind('<Configure>', self.resize)
+
   def createMenuFrame(self):
     self.menuFrame = tk.Frame(self)
     self.menuFrame.grid(row=0, column=0, sticky="EW")
@@ -35,10 +37,12 @@ class FifteenGame(tk.Tk):
 
     rowsNumber = columnsNumber = 4
     self.columnsNumber = columnsNumber
+    self.rowsNumber = rowsNumber
 
     self.playButtons = []
+    buttonWidth = len(str(rowsNumber * columnsNumber - 1))
     for i in range(1, rowsNumber * columnsNumber):
-      playButton = tk.Button(self.playFrame, text=str(i))
+      playButton = tk.Button(self.playFrame, text=str(i), width=buttonWidth)
       playButton["command"] = lambda button=playButton: self.processClick(button)
       self.playButtons.append(playButton)
 
@@ -48,6 +52,13 @@ class FifteenGame(tk.Tk):
     for i in range(columnsNumber):
       self.playFrame.columnconfigure(i, weight=1)
 
+  def resize(self, ev):
+    if (ev.widget == self.playFrame):
+      height = ev.height / self.rowsNumber
+      width = ev.width / self.columnsNumber
+      scale = 0.4 * min(width, height)
+      for button in self.playButtons:
+        button.config(font=("", int(scale)))
 
   def processClick(self, button):
     row = button.grid_info()["row"]
